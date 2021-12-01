@@ -1,0 +1,195 @@
+0a1,2
+> ///https://msdn.microsoft.com/en-us/library/d133hta4.aspx
+> 
+2a5,6
+> 
+> 
+3a8
+> using System.Runtime.Remoting;
+10c15,21
+< using Logger;
+---
+> 
+> // пример динамической загрузки библиотеки журналирования
+> /// в принципе пространство можно оставить я же его знаю все равно
+> //using Logger;
+> 
+> using System.Reflection;
+> 
+23,26c34,41
+< /*        static  Program(){
+<           var format = new System.Globalization.NumberFormatInfo();
+<           format.NumberDecimalSeparator = ".";
+<         }  */
+---
+>         static void Types(Assembly ass)
+>         {
+>             Console.WriteLine("Типы сборки {0}: \n",ass.FullName);
+>             Type[] types = ass.GetTypes();
+>             foreach (Type t in types)
+>                 Console.WriteLine("--> " + t);
+>             Console.WriteLine();
+>         }
+27a43
+>         static public  Type ImpLevel;
+31c47
+<         static public ArgIntMM    logLvl ; ///<чтобы задать уровень журналирования числом.
+---
+> //        static public ArgIntMM    logLvl ; ///<чтобы задать уровень журналирования числом.
+38c54
+<             string lLvl = "log level names:{"+Loger.ILList()+"}";             
+---
+>             string lLvl = "log level names:{ Spam, Error, Debug, Warning }";             
+42,43c58
+<            logLvl =  new ArgIntMM(1,    "l",  "log",  "log level", "LLL");
+<            logNm  =  new ArgStr  ("Error",    "ln",  "logName",   lLvl, "NNN");
+---
+>            logNm  =  new ArgStr  ("Error",    "l",  "log",   lLvl, "NNN");
+45,46c60,62
+<            logLvl.setMin(1);
+<            logLvl.setMax(8);
+---
+> //           logLvl =  new ArgIntMM(1,    "l",  "log",  "log level", "LLL");
+> //           logLvl.setMin(1);
+> //           logLvl.setMax(8);
+83d98
+<            IMPORTANCELEVEL x = IMPORTANCELEVEL.Error;
+92,93d106
+<              else if (logLvl.check(ref i, args))
+<                ;
+95c108
+<                   x = Loger.strtoLvl(logNm);
+---
+>                   ;
+103,108c116,146
+<            using (Loger l = new Loger(logNm, dbgF)){
+<               if (vF)
+<                 l.cnslLvl = IMPORTANCELEVEL.Stats;
+<               primer a = new primer("first", l, ThreadPriority.Normal);
+<               primer b = new primer("second", l);
+<      //       a.t.Priority = ThreadPriority.Lowest;
+---
+> 
+> /// использование отражения --------------------------
+> 
+> 
+> Assembly assembly = Assembly.LoadFrom("Logger.cs.dll");  // загрузили длл
+> Types(assembly);
+> Type type = assembly.GetType("Logger.Loger");            // взяли тип Логер
+> ImpLevel = assembly.GetType("Logger.IMPORTANCELEVEL");   // взяли тип уровень важности
+> 
+> 
+> //http://www.sql.ru/forum/548476/methodinfo-invoke-dlya-peregruzhennyh-metodov
+> //   Type t = Type.GetType("TestForUserControls.Form2");
+> //
+>    string iLvl = logNm;
+>    object ol = type.GetConstructor(new Type[] { typeof(string)}).Invoke(new object[] { iLvl});
+>     // это вызов конструктора  new Loger(logNm) - с заданным уровнем журналирования
+> ///object ol = Activator.CreateInstance(type);        //   вызвать  Loger() получилось, специально делал такой конструктор
+> ///object ol = Activator.CreateInstance(type, logNm); // так не получилось использовать Loger(logNm)
+>                                                       // , видиом надо явно к строке преобразовать.
+> //            using (Loger l = new Loger(logNm, dbgF)) --------------- отражение заменяет этот оператор
+> 
+>             {
+>               if (vF)  {                    ///-------------------
+> MethodInfo method = type.GetMethod("setCnslLvl"); ///  задать уровень вывода журнала в консоль
+> object[] pars = new object[1];
+> pars[0] =  "Spam";
+> Object retVal = method.Invoke(ol, pars);    ///-------------------
+>               }
+>               primer a = new primer("first", ol,  ThreadPriority.Normal);
+>               primer b = new primer("second", ol );
+>               a.t.Priority = ThreadPriority.Lowest;
+110,111c148,150
+<               l.WriteLine(IMPORTANCELEVEL.Stats,"thread '{0}' finished with {1}/{2} numbers/primers"
+<                         , "first", a.numbers, a.primers);
+---
+>         /// эти выводы удалил лень оформалять вызов WriteLine
+>         ///      l.WriteLine(IMPORTANCELEVEL.Stats,"thread '{0}' finished with {1}/{2} numbers/primers"
+>         ///               , "first", a.numbers, a.primers);
+113,114c152,153
+<               l.WriteLine(IMPORTANCELEVEL.Stats,"thread '{0}' finished with {1}/{2} numbers/primers"
+<                        , "second", b.numbers, b.primers);
+---
+>         ///      l.WriteLine(IMPORTANCELEVEL.Stats,"thread '{0}' finished with {1}/{2} numbers/primers"
+>         ///              , "second", b.numbers, b.primers);
+116,117c155,156
+<               l.WriteLine(IMPORTANCELEVEL.Stats, "time of work is {0} secs"
+<                    , (fn - st).TotalSeconds);
+---
+>          ///     l.WriteLine(IMPORTANCELEVEL.Stats, "time of work is {0} secs"
+>           ///         , (fn - st).TotalSeconds);
+119a159
+> ((IDisposable)ol).Dispose();         /// юзинга нет, надо явно вызвать диспоуз
+130c170
+<       Loger log = null;
+---
+>       object log = null;
+133c173
+<                    , Loger l     ///<журнал для вывода сообщений;
+---
+>                    , object l     ///<журнал для вывода сообщений;
+155c195,212
+<         while (i < Program.max){
+---
+> //--------------------------------------- взяли ссылку на writeLine
+> Assembly assembly = Assembly.LoadFrom("Logger.cs.dll");
+> Type t = assembly.GetType("Logger.Loger");
+> /*
+> MethodInfo method = t.GetMethod("WriteLine",  new Type[] { typeof(string)});
+> */
+> MethodInfo method = t.GetMethod("WriteLine",
+>   BindingFlags.Public | BindingFlags.Instance,
+>   null,
+>   new [] {  Program.ImpLevel, typeof(string), typeof(object[])},
+>   null);
+> //---------------------------------------
+> if (method == null)
+>          Console.WriteLine("{0}: there is no your method", name);
+> else 
+>          Console.WriteLine("{0}: there is  your method!", name);
+> 
+> //----------------------------------------
+156a214,215
+> 
+>         while (i < Program.max){
+166,169d224
+< //          lock (typeof(Program)){
+< //            numbers++;
+< //            i = Program.current++;
+< //          }
+179a235,236
+> 
+> 
+182,185c239,264
+<              log.WriteLine(IMPORTANCELEVEL.Info,"{0}: next prime is {1}", name, i);
+<           }      
+<           else                           
+<              log.WriteLine(IMPORTANCELEVEL.Debug,"{0}: {1} is not a prime", name, i);
+---
+> //             log.WriteLine(IMPORTANCELEVEL.Info,"{0}: next prime is {1}", name, i);
+> //----------------------------- сообщение о простом числе, уровень важности Info
+>              object[] pars = new object[3];
+>                object[] pars2 =  new object[2];
+>                pars2[0]   = name;
+>                pars2[1]   = i;
+>             pars[0] =  6 ;  //инфо
+> //             pars[0] = 
+>              pars[1] =  "{0}: next prime is {1}";
+>              pars[2] = pars2;
+> 
+>            	Object retVal = method.Invoke(log, pars); 
+> //------------------------------------------
+>           }      	
+>           else  {
+> //------------------------------- сообщение о не простом числе, уровень важности Debug
+>             object[] pars = new object[3];
+>             pars[0] =  1 ;  // дебаг
+>             pars[1] = "{0}: {1} is not a prime";
+>              object[] pars2 =  new object[2];
+>              pars2[0]   = name;
+>              pars2[1]   = i;
+>             pars[2] = pars2;
+>             Object retVal = method.Invoke(log, pars); 
+> //-----------------------------------------
+>           }

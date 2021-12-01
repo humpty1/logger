@@ -1,0 +1,28 @@
+[03.12.2016 22:37:42]: [Info]		Hello >Ignore<
+[03.12.2016 22:37:42]: [Info]		first: next prime is 3
+[03.12.2016 22:37:42]: [Info]		second: next prime is 5
+[03.12.2016 22:37:42]: [Info]		second: next prime is 7
+[03.12.2016 22:37:42]: [Stats]		thread 'first' finished with 4/1 numbers/primers
+[03.12.2016 22:37:43]: [Info]		second: next prime is 11
+[03.12.2016 22:37:43]: [Stats]		thread 'second' finished with 5/3 numbers/primers
+[03.12.2016 22:37:43]: [Stats]		time of work is 0,671875 secs
+
+.
+[03.12.2016 22:37:49]: [Warning]		Logger was started in a.exe, console/window True/False application
+[03.12.2016 22:37:49]: [Info]		Hello >Ignore<
+[03.12.2016 22:37:49]: [Info]		first: next prime is 3
+[03.12.2016 22:37:49]: [Debug]		second: 4 is not a prime
+[03.12.2016 22:37:49]: [Debug]		second: 6 is not a prime
+[03.12.2016 22:37:49]: [Info]		first: next prime is 5
+[03.12.2016 22:37:49]: [Info]		second: next prime is 7
+[03.12.2016 22:37:49]: [Debug]		first: 8 is not a prime
+[03.12.2016 22:37:49]: [Debug]		second: 10 is not a prime
+[03.12.2016 22:37:49]: [Debug]		first: 9 is not a prime
+[03.12.2016 22:37:50]: [Info]		first: next prime is 11
+[03.12.2016 22:37:50]: [Stats]		thread 'first' finished with 5/3 numbers/primers
+[03.12.2016 22:37:50]: [Stats]		thread 'second' finished with 4/1 numbers/primers
+[03.12.2016 22:37:50]: [Stats]		time of work is 0,703125 secs
+[03.12.2016 22:37:50]: [Warning]		Logger destructor is here...
+[03.12.2016 22:37:50]: [Warning]		Logger  is stopped
+
+.
